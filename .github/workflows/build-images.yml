@@ -11,11 +11,11 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  OWNER: pixel-process-ug
 
 jobs:
   build-laravel:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'laravel-base/')
     permissions:
       contents: read
       packages: write
@@ -34,14 +34,13 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/laravel-base:8.3
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/laravel-base:latest
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/laravel-base:8.3
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/laravel-base:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   build-nextjs:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'nextjs-base/')
     permissions:
       contents: read
       packages: write
@@ -60,7 +59,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/nextjs-base:22
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/nextjs-base:latest
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/nextjs-base:22
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/nextjs-base:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
