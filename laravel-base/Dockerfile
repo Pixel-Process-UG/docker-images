@@ -15,7 +15,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 RUN pecl install redis && docker-php-ext-enable redis
 
 # Install Composer
-COPY --from=composer:2 /usr/local/bin/composer /usr/local/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set working directory
 WORKDIR /var/www/html
