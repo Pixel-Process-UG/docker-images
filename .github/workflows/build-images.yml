@@ -6,6 +6,7 @@ on:
     paths:
       - 'laravel-base/**'
       - 'nextjs-base/**'
+      - 'smtp-to-postmark/**'
       - '.github/workflows/build-images.yml'
   workflow_dispatch:
 
@@ -61,5 +62,28 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.OWNER }}/nextjs-base:22
             ${{ env.REGISTRY }}/${{ env.OWNER }}/nextjs-base:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-smtp-bridge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: smtp-to-postmark
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/smtp-to-postmark:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
