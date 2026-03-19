@@ -1,17 +1,17 @@
 FROM php:8.3-fpm-alpine
 
-# Install system dependencies
+# Install system dependencies (keep build deps for extension compilation)
 RUN apk add --no-cache \
     git curl zip unzip libpng-dev libjpeg-turbo-dev freetype-dev \
     libzip-dev icu-dev postgresql-dev linux-headers oniguruma-dev \
-    supervisor nginx
+    supervisor nginx $PHPIZE_DEPS
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
     pdo_pgsql pgsql gd zip bcmath intl opcache pcntl mbstring exif
 
-# Install Redis extension
+# Install Redis extension (needs phpize from $PHPIZE_DEPS)
 RUN pecl install redis && docker-php-ext-enable redis
 
 # Install Composer
